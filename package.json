@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/liz-rondone/Liri/issues"
   },
-  "homepage": "https://github.com/liz-rondone/Liri#readme"
+  "homepage": "https://github.com/liz-rondone/Liri#readme",
+  "dependencies": {
+    "node-spotify-api": "^1.0.5"
+  }
 }

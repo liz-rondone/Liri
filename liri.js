@@ -38,7 +38,7 @@ var spotifyClientSecret = keys.spotifyKeys.client_secret;
 /********** VARIABLES **********/
 var fs = require("fs");
 var request = require("request");
-var spotify = require('spotify');
+var Spotify = require('node-spotify-api');
 var Twitter = require('twitter');
 var action = process.argv[2];
 var searchItem = process.argv[3];
@@ -67,6 +67,11 @@ switch(action) {
 	// Twitter
 	case "my-tweets":
 		twitter();
+	break;
+
+	// Do What It Says
+	case "do-what-it-says":
+		doWhatItSays();
 	break;
 }
 
@@ -100,19 +105,19 @@ function omdb(movieName) {
 function spot(songTitle) {
 
 	var spotify = new Spotify({
-		client_id: spotifyClientId,
-		client_secret: spotifyClientSecret
+	  id: spotifyClientId,
+	  secret: spotifyClientSecret
 	});
+	 
+	spotify.search({ type: 'track', query: songTitle }, function(err, data) {
+	  if (err) {
+	    return console.log('Error occurred: ' + err);
+	  }
+	 
+	var jsonResponse = JSON.parse(data);
 
-	spotify.search({ type: 'track', query: sontTitle }, 
-	function spotify(err, data) {
-	    if ( err ) {
-	        console.log('Error occurred: ' + err);
-	        return;
-	    }
-	    // var jsonResponse = JSON.parse(data);
-	    console.log(data.body.tracks.total);
-	});
+	console.log("Artist: " + jsonResponse.artist);
+	});	
 };
 
 
@@ -136,5 +141,20 @@ function twitter() {
 		  	}
 		}
 	})
-}
+};
 
+
+
+/********** DO WHAT IT SAYS **********/
+function doWhatItSays() {
+	fs.readFile("random.txt", "utf8", function(error, data) {
+
+		if (error) {
+			return console.log(error);
+		}
+
+		console.log(data);
+		var dataArr = data.split(",");
+		console.log(dataArr);
+	});
+};
