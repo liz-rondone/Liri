@@ -1,4 +1,4 @@
-console.log('this is loaded');
+// console.log('this is loaded');
 
 exports.twitterKeys = {
 	consumer_key: 'TpAH0IYR17eUInYlOpcDyMXIz',
@@ -8,7 +8,7 @@ exports.twitterKeys = {
 }
 
 exports.omdbKeys = {
-	omdb_Key: "40e9cece",
+	omdb_key: "40e9cece",
 }
 
 exports.spotifyKeys = {

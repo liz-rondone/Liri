@@ -26,90 +26,115 @@
 	// Feel free to change the text in that document to test out the feature for other commands.
 
 
-
+/********** KEYS **********/
+var keys = require("./keys.js");
+var twitterConKey = keys.twitterKeys.consumer_key;
+var twitterConSecret = keys.twitterKeys.consumer_secret;
+var twitterTokKey = keys.twitterKeys.access_token_key;
+var twitterTokSecret = keys.twitterKeys.access_token_secret;
+var omdbKey = keys.omdbKeys.omdb_key;
+var spotifyClientId = keys.spotifyKeys.client_id;
+var spotifyClientSecret = keys.spotifyKeys.client_secret;
 /********** VARIABLES **********/
 var fs = require("fs");
 var request = require("request");
 var spotify = require('spotify');
-var twitter = require('twitter');
+var Twitter = require('twitter');
 var action = process.argv[2];
-var movieName = process.argv[2];
-var queryUrl = "http://www.omdbapi.com/?t=" + movieName + "&y=&plot=short&apikey=40e9cece";
-
+var searchItem = process.argv[3];
 
 
 /********** SWITCH ACTION **********/
-// switch(action) {
-// 	case "movie-this":
-// 	omdb();
-// 	break;
+switch(action) {
+	// OMDb
+	case "movie-this":
+		if (searchItem === undefined) {
+			omdb("mr+nobody");
+		} else {
+			omdb(searchItem);
+		}
+	break;
 
-// 	case "spotify-this-song":
-// 	spotify();
-// 	break;
+	// Spotify
+	case "spotify-this-song":
+		if (searchItem === undefined) {
+			spot("the sign ace of base");
+		} else {
+			spot(searchItem);
+		}
+	break;
 
-// 	// case "my-tweets":
-// 	// twitter();
-// 	// break;
-// }
-
-
-
-/********** OMDb **********/
-// If the request is successful
-request(queryUrl, function omdb(error, response, body) {
-
-	// If information is correctly entered 
-	if (!error && response.statusCode === 200) {
-		// Parse the body of the site and recover just the requested info
-    	console.log("Movie Title: " + JSON.parse(body).Title);
-    	console.log("Release Year: " + JSON.parse(body).Year);
-    	console.log("IMDb Rating: " + JSON.parse(body).imdbRating);
-    	console.log("Rotten Tomatoes Rating: " + JSON.parse(body).Ratings[1].Value);
-    	console.log("Produced in: " + JSON.parse(body).Country);
-    	console.log("Language: " + JSON.parse(body).Language);
-    	console.log("Plot: " + JSON.parse(body).Plot);
-    	console.log("Actors: " + JSON.parse(body).Actors);
-	}
-	// else (error) {
-	// 	console.log("sorry");
-	// }
-})
-
-
-
-/********** SPOTIFY **********/
-// spotify.search({ type: 'track', query: 'dancing in the moonlight' }, function spotify(err, data) {
-//     if ( err ) {
-//         console.log('Error occurred: ' + err);
-//         return;
-//     }
-// });
-
-
-
-/********** TWITTER **********/
-function twitter() {
-	var params = {screen_name: 'wrigron'};
-
-	client.get('statuses/user_timeline', params, function(error, tweets, response) {
-	  	if (!error) {
-	    	console.log(tweets);
-	  	}
-	});
+	// Twitter
+	case "my-tweets":
+		twitter();
+	break;
 }
 
 
 
-// function twitter() {
-// 	var params = {screen_name: 'wrigron'};
-// 	client.get('statuses/user_timeline', params, function(error, tweets, response) {
-// 		if (!error) {
-// 		  	// for (var i = 0; i < tweets.length; i++) {
-// 			console.log(tweets);
-// 		  	// }
-// 		}
-	    
-// 	}
-// });
-// }
+/********** OMDb **********/
+function omdb(movieName) {
+	var queryUrl = "http://www.omdbapi.com/?t=" + movieName + "&y=&plot=short&apikey=" + omdbKey;
+	
+	request(queryUrl, function(error, response, body) {
+
+		if (!error && response.statusCode === 200) {
+			// Parse the body of the site and recover just the requested info
+			var jsonResponse = JSON.parse(body);
+
+	    	console.log("Movie Title: " + jsonResponse.Title);
+	    	console.log("Release Year: " + jsonResponse.Year);
+	    	console.log("IMDb Rating: " + jsonResponse.imdbRating);
+	    	console.log("Rotten Tomatoes Rating: " + jsonResponse.Ratings[1].Value);
+	    	console.log("Produced in: " + jsonResponse.Country);
+	    	console.log("Language: " + jsonResponse.Language);
+	    	console.log("Plot: " + jsonResponse.Plot);
+	    	console.log("Actors: " + jsonResponse.Actors);
+		}
+	});
+};
+
+
+
+/********** SPOTIFY **********/
+function spot(songTitle) {
+
+	var spotify = new Spotify({
+		client_id: spotifyClientId,
+		client_secret: spotifyClientSecret
+	});
+
+	spotify.search({ type: 'track', query: sontTitle }, 
+	function spotify(err, data) {
+	    if ( err ) {
+	        console.log('Error occurred: ' + err);
+	        return;
+	    }
+	    // var jsonResponse = JSON.parse(data);
+	    console.log(data.body.tracks.total);
+	});
+};
+
+
+/********** TWITTER **********/
+function twitter() {
+
+	var client = new Twitter({
+	  consumer_key: twitterConKey,
+	  consumer_secret: twitterConSecret,
+	  access_token_key: twitterTokKey,
+	  access_token_secret: twitterTokSecret
+	});
+
+	var params = {screen_name: 'wrigron'};
+	client.get('statuses/user_timeline', params, function(error, tweets, response) {
+		if (!error) {
+			var tweetLimit = 20;
+		  	for (var i = 0; i < tweetLimit; i++) {
+				console.log(tweets[i].text);
+				console.log();
+		  	}
+		}
+	})
+}
+
