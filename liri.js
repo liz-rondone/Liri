@@ -53,6 +53,7 @@ switch(action) {
 		} else {
 			omdb(searchItem);
 		}
+		// console.log(action);
 	break;
 
 	// Spotify
@@ -151,10 +152,13 @@ function doWhatItSays() {
 
 		if (error) {
 			return console.log(error);
-		}
+		} 
 
-		console.log(data);
+		// console.log(data);
 		var dataArr = data.split(",");
-		console.log(dataArr);
+		// console.log(dataArr[0]);
+		var actionTxt = dataArr[0];
+		var searchTxt = dataArr[1];
+
 	});
 };
