@@ -33,25 +33,25 @@ var request = require("request");
 var spotify = require('spotify');
 var twitter = require('twitter');
 var action = process.argv[2];
-var movieName = process.argv[3];
-var queryUrl = "http://www.omdbapi.com/?t=" + movieName + "&y=&plot=short&apikey=  ";
+var movieName = process.argv[2];
+var queryUrl = "http://www.omdbapi.com/?t=" + movieName + "&y=&plot=short&apikey=40e9cece";
 
 
 
 /********** SWITCH ACTION **********/
-switch(action) {
-	case "movie-this":
-	omdb();
-	break;
+// switch(action) {
+// 	case "movie-this":
+// 	omdb();
+// 	break;
 
-	case "spotify-this-song":
-	spotify();
-	break;
+// 	case "spotify-this-song":
+// 	spotify();
+// 	break;
 
-	// case "my-tweets":
-	// twitter();
-	// break;
-}
+// 	// case "my-tweets":
+// 	// twitter();
+// 	// break;
+// }
 
 
 
@@ -65,25 +65,51 @@ request(queryUrl, function omdb(error, response, body) {
     	console.log("Movie Title: " + JSON.parse(body).Title);
     	console.log("Release Year: " + JSON.parse(body).Year);
     	console.log("IMDb Rating: " + JSON.parse(body).imdbRating);
-    	console.log("Rotten Tomatoes Rating: " + JSON.parse(body).tomatoRating);
+    	console.log("Rotten Tomatoes Rating: " + JSON.parse(body).Ratings[1].Value);
     	console.log("Produced in: " + JSON.parse(body).Country);
     	console.log("Language: " + JSON.parse(body).Language);
     	console.log("Plot: " + JSON.parse(body).Plot);
     	console.log("Actors: " + JSON.parse(body).Actors);
 	}
-	console.log("sorry");
+	// else (error) {
+	// 	console.log("sorry");
+	// }
 })
 
 
 
 /********** SPOTIFY **********/
-spotify.search({ type: 'track', query: 'dancing in the moonlight' }, function spotify(err, data) {
-    if ( err ) {
-        console.log('Error occurred: ' + err);
-        return;
-    }
-});
+// spotify.search({ type: 'track', query: 'dancing in the moonlight' }, function spotify(err, data) {
+//     if ( err ) {
+//         console.log('Error occurred: ' + err);
+//         return;
+//     }
+// });
 
 
 
 /********** TWITTER **********/
+function twitter() {
+	var params = {screen_name: 'wrigron'};
+
+	client.get('statuses/user_timeline', params, function(error, tweets, response) {
+	  	if (!error) {
+	    	console.log(tweets);
+	  	}
+	});
+}
+
+
+
+// function twitter() {
+// 	var params = {screen_name: 'wrigron'};
+// 	client.get('statuses/user_timeline', params, function(error, tweets, response) {
+// 		if (!error) {
+// 		  	// for (var i = 0; i < tweets.length; i++) {
+// 			console.log(tweets);
+// 		  	// }
+// 		}
+	    
+// 	}
+// });
+// }
