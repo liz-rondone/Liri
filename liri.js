@@ -59,7 +59,7 @@ switch(action) {
 	// Spotify
 	case "spotify-this-song":
 		if (searchItem === undefined) {
-			spot("the sign ace of base");
+			spot("the sign");
 		} else {
 			spot(searchItem);
 		}
@@ -87,15 +87,18 @@ function omdb(movieName) {
 		if (!error && response.statusCode === 200) {
 			// Parse the body of the site and recover just the requested info
 			var jsonResponse = JSON.parse(body);
-
-	    	console.log("Movie Title: " + jsonResponse.Title);
-	    	console.log("Release Year: " + jsonResponse.Year);
-	    	console.log("IMDb Rating: " + jsonResponse.imdbRating);
-	    	console.log("Rotten Tomatoes Rating: " + jsonResponse.Ratings[1].Value);
-	    	console.log("Produced in: " + jsonResponse.Country);
-	    	console.log("Language: " + jsonResponse.Language);
-	    	console.log("Plot: " + jsonResponse.Plot);
-	    	console.log("Actors: " + jsonResponse.Actors);
+			console.log();
+			console.log("-------------------------------------------------------------------");
+	    	console.log("MOVIE TITLE: " + jsonResponse.Title);
+	    	console.log("RELEASE YEAR: " + jsonResponse.Year);
+	    	console.log("IMDb RATING: " + jsonResponse.imdbRating);
+	    	console.log("ROTTEN TOMATOES RATING: " + jsonResponse.Ratings[1].Value);
+	    	console.log("PRODUCED IN: " + jsonResponse.Country);
+	    	console.log("LANGUAGE: " + jsonResponse.Language);
+	    	console.log("PLOT: " + jsonResponse.Plot);
+	    	console.log("ACTORS: " + jsonResponse.Actors);
+	    	console.log("-------------------------------------------------------------------");
+	    	console.log();
 		}
 	});
 };
@@ -104,22 +107,31 @@ function omdb(movieName) {
 
 /********** SPOTIFY **********/
 function spot(songTitle) {
-
+ 
 	var spotify = new Spotify({
-	  id: spotifyClientId,
-	  secret: spotifyClientSecret
+		id: spotifyClientId,
+		secret: spotifyClientSecret
 	});
 	 
-	spotify.search({ type: 'track', query: songTitle }, function(err, data) {
-	  if (err) {
-	    return console.log('Error occurred: ' + err);
-	  }
-	 
-	var jsonResponse = JSON.parse(data);
+	spotify
+	.search({ type: 'track', query: songTitle })
+	.then(function(response) {
+		var spotifyArr = response.tracks.items[0];
 
-	console.log("Artist: " + jsonResponse.artist);
-	});	
+		console.log();
+		console.log("-------------------------------------------------------------------");
+		console.log("ARTIST: " + spotifyArr.artists[0].name);
+		console.log("TITLE: " + spotifyArr.name);
+		console.log("ALBUM: " + spotifyArr.album.name);
+		console.log("URL: " + spotifyArr.preview_url);
+		console.log("-------------------------------------------------------------------");
+		console.log();
+	})
+	.catch(function(err) {
+		console.log(error);
+	});
 };
+
 
 
 /********** TWITTER **********/
@@ -137,8 +149,10 @@ function twitter() {
 		if (!error) {
 			var tweetLimit = 20;
 		  	for (var i = 0; i < tweetLimit; i++) {
-				console.log(tweets[i].text);
 				console.log();
+				console.log("-------------------------------------------------------------------");
+				console.log(tweets[i].text);
+				console.log("-------------------------------------------------------------------");
 		  	}
 		}
 	})
@@ -150,15 +164,24 @@ function twitter() {
 function doWhatItSays() {
 	fs.readFile("random.txt", "utf8", function(error, data) {
 
-		if (error) {
-			return console.log(error);
-		} 
-
 		// console.log(data);
 		var dataArr = data.split(",");
 		// console.log(dataArr[0]);
 		var actionTxt = dataArr[0];
 		var searchTxt = dataArr[1];
+
+		if (error) {
+			return console.log(error);
+		} else {
+
+			if(actionTxt === "spotify-this-song"){
+				spot(searchTxt);
+			} else if (actionTxt === "movie-this") {
+				omdb(searchTxt);
+			} else if (actionTxt === "my tweets") {
+				twitter(searchTxt);
+			};
+		};
 
 	});
 };
