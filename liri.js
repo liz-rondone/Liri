@@ -164,7 +164,6 @@ function twitter() {
 function doWhatItSays() {
 	fs.readFile("random.txt", "utf8", function(error, data) {
 
-		// console.log(data);
 		var dataArr = data.split(",");
 		// console.log(dataArr[0]);
 		var actionTxt = dataArr[0];
